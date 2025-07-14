@@ -15,7 +15,7 @@ const client = new MongoClient(uri, {
 
 async function connectDB() {
     try {
-        db = client.db();
+        db = client.db('ClassifyDB');
         console.log('MongoDB connected with Native driver ✅');
     } catch (err) {
         console.error('MongoDB connection failed:', err);
