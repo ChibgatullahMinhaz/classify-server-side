@@ -4,6 +4,7 @@ import { getApprovedClasses, getClassById } from "../Controllers/classController
 import { submitTeacherRequest } from "../Controllers/teacherRequestController.js";
 import { approveTeacherRequest, getAllTeacherRequests, rejectTeacherRequest } from "../Controllers/adminTeacherController.js";
 import { getAllUsers, makeUserAdmin } from "../Controllers/userAdminController.js";
+import { approveClass, getAllClasses, rejectClass } from "../Controllers/adminClassController.js";
 const router = Router();
 
 // running the server
@@ -27,6 +28,13 @@ router.get("/users", getAllUsers);
 // PATCH make admin
 router.patch("/users/make-admin/:id", makeUserAdmin);
 
+// GET all classes (admin view)
+router.get("/admin/classes", getAllClasses);
 
+// PATCH approve class
+router.patch("/admin/classes/approve/:id", approveClass);
+
+// PATCH reject class
+router.patch("/admin/classes/reject/:id", rejectClass);
 
 export default router;
