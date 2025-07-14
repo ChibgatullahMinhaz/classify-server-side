@@ -6,6 +6,7 @@ import { approveTeacherRequest, getAllTeacherRequests, rejectTeacherRequest } fr
 import { getAllUsers, makeUserAdmin } from "../Controllers/userAdminController.js";
 import { approveClass, getAllClasses, rejectClass } from "../Controllers/adminClassController.js";
 import { addNewClass } from "../Controllers/addClassController.js";
+import { createAssignment, deleteClass, getClassDetails, getClassProgress, getMyClasses, updateClass } from "../Controllers/teacherClassController.js";
 const router = Router();
 
 // running the server
@@ -42,5 +43,18 @@ router.patch("/admin/classes/reject/:id", rejectClass);
 // POST route to add a new class
 router.post("/addClasses", addNewClass);
 
+
+
+// Teacher's Classes
+router.get("/my-classes", getMyClasses);
+router.put("/class/:id", updateClass);
+router.delete("/class/:id", deleteClass);
+router.get("/class/:id", getClassDetails);
+
+// Assignments
+router.post("/assignments", createAssignment);
+
+// Class Progress Data
+router.get("/class-progress/:id", getClassProgress);
 
 export default router;
