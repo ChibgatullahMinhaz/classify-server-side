@@ -38,3 +38,15 @@ export const deleteClass = async (req, res) => {
   }
 };
 
+// 4️⃣ Get Single Class Details
+export const getClassDetails = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const classData = await db.collection("classes").findOne({ _id: new ObjectId(id) });
+    res.status(200).json(classData);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching class", error });
+  }
+};
+
+
