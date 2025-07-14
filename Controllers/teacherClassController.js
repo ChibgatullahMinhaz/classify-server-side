@@ -49,4 +49,37 @@ export const getClassDetails = async (req, res) => {
   }
 };
 
+// 5️⃣ Create Assignment for Class
+export const createAssignment = async (req, res) => {
+  try {
+    const assignment = {
+      ...req.body,
+      classId: new ObjectId(req.body.classId),
+      createdAt: new Date()
+    };
+    const result = await db.collection("assignments").insertOne(assignment);
+    res.status(201).json({ message: "Assignment created", insertedId: result.insertedId });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to create assignment", error });
+  }
+};
 
+// 6️⃣ Class Progress (Assignment count, submission count, enrollment)
+export const getClassProgress = async (req, res) => {
+  const { id } = req.params;
+  const classId = new ObjectId(id);
+
+  try {
+    const classData = await db.collection("classes").findOne({ _id: classId });
+    const totalAssignments = await db.collection("assignments").countDocuments({ classId });
+    const totalSubmissions = await db.collection("submissions").countDocuments({ classId });
+
+    res.status(200).json({
+      totalEnrollment: classData?.totalEnrollment || 0,
+      totalAssignments,
+      totalSubmissions
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error getting progress", error });
+  }
+};
