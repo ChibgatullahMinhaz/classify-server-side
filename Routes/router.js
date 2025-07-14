@@ -3,6 +3,7 @@ import { serverStart } from "../Controllers/initial.js";
 import { getApprovedClasses, getClassById } from "../Controllers/classController.js";
 import { submitTeacherRequest } from "../Controllers/teacherRequestController.js";
 import { approveTeacherRequest, getAllTeacherRequests, rejectTeacherRequest } from "../Controllers/adminTeacherController.js";
+import { getAllUsers, makeUserAdmin } from "../Controllers/userAdminController.js";
 const router = Router();
 
 // running the server
@@ -19,5 +20,13 @@ router.post("/api/teacher-request", submitTeacherRequest);
 router.get("/teacher-requests", getAllTeacherRequests);
 router.patch("/teacher-requests/approve/:id", approveTeacherRequest);
 router.patch("/teacher-requests/reject/:id", rejectTeacherRequest);
+
+// GET all users with optional search ?search=abc
+router.get("/users", getAllUsers);
+
+// PATCH make admin
+router.patch("/users/make-admin/:id", makeUserAdmin);
+
+
 
 export default router;
