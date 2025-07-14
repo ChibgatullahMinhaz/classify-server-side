@@ -7,6 +7,7 @@ import { getAllUsers, makeUserAdmin } from "../Controllers/userAdminController.j
 import { approveClass, getAllClasses, rejectClass } from "../Controllers/adminClassController.js";
 import { addNewClass } from "../Controllers/addClassController.js";
 import { createAssignment, deleteClass, getClassDetails, getClassProgress, getMyClasses, updateClass } from "../Controllers/teacherClassController.js";
+import { getUserRole, saveUser } from "../Controllers/userController.js";
 const router = Router();
 
 // running the server
@@ -56,5 +57,10 @@ router.post("/assignments", createAssignment);
 
 // Class Progress Data
 router.get("/class-progress/:id", getClassProgress);
+
+// authentication
+router.post('/users', saveUser);
+router.get('/users/role/:email', getUserRole);
+
 
 export default router;

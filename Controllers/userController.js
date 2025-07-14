@@ -25,3 +25,20 @@ export const saveUser = async (req, res) => {
         res.status(500).json({ message: "Failed to save user", error });
     }
 };
+
+
+export const getUserRole = async (req, res) => {
+  const { email } = req.params; 
+
+  try {
+    const user = await db.collection('users').findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({ email: user.email, role: user.role });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch user role", error });
+  }
+};
