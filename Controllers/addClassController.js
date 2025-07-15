@@ -4,6 +4,8 @@ import db from "../config/db.js";
 // POST: Add new class (by teacher)
 export const addNewClass = async (req, res) => {
   try {
+    const dataBase = db.getDB()
+
     const {
       title,
       name,
@@ -25,11 +27,11 @@ export const addNewClass = async (req, res) => {
       description,
       image,
       totalEnrollment: 0,
-      status: "pending",      
+      status: "pending",
       createdAt: new Date()
     };
 
-    const result = await db.collection("classes").insertOne(newClass);
+    const result = await dataBase.collection("classes").insertOne(newClass);
 
     if (result.insertedId) {
       res.status(201).json({

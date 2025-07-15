@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { serverStart } from "../Controllers/initial.js";
 import { getApprovedClasses, getClassById } from "../Controllers/classController.js";
-import { submitTeacherRequest } from "../Controllers/teacherRequestController.js";
+import { existingTeacherRequest, submitTeacherRequest } from "../Controllers/teacherRequestController.js";
 import { approveTeacherRequest, getAllTeacherRequests, rejectTeacherRequest } from "../Controllers/adminTeacherController.js";
 import { getAllUsers, makeUserAdmin } from "../Controllers/userAdminController.js";
 import { approveClass, getAllClasses, rejectClass } from "../Controllers/adminClassController.js";
@@ -18,8 +18,9 @@ router.get("/api/ApprovedClasses", getApprovedClasses);
 router.get("/api/classDetails/:id", getClassById);
 // request as a teacher 
 router.post("/api/teacher-request", submitTeacherRequest);
+router.get("/api/teacher-request", existingTeacherRequest);
 
-
+// api/teacher-request
 // admin teacher controller
 router.get("/teacher-requests", getAllTeacherRequests);
 router.patch("/teacher-requests/approve/:id", approveTeacherRequest);
@@ -62,5 +63,19 @@ router.get("/class-progress/:id", getClassProgress);
 router.post('/users', saveUser);
 router.get('/users/role/:email', getUserRole);
 
+
+
+// middleware usage example 
+// router.get('/admin-only', verifyFirebaseJWT, requireAdmin, (req, res) => {
+//   res.send('Hello Admin!');
+// });
+
+// router.post('/add-class', verifyFirebaseJWT, requireTeacher, (req, res) => {
+//   res.send('Class created by teacher');
+// });
+
+// router.get('/my-profile', verifyFirebaseJWT, requireOwnAccess, (req, res) => {
+//   res.send(`This is your profile, ${req.user.email}`);
+// });
 
 export default router;

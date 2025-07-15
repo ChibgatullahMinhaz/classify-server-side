@@ -1,11 +1,12 @@
 // controllers/classController.js
-import { db } from "../config/db.js";
+import db from '../config/db.js'
 import { ObjectId } from "mongodb";
 
 // 1. Get all classes (for admin dashboard)
 export const getAllClasses = async (req, res) => {
   try {
-    const classes = await db.collection("classes").find({}).toArray();
+    const dataBase = db.getDB()
+    const classes = await dataBase.collection("classes").find({}).toArray();
     res.status(200).json(classes);
   } catch (err) {
     res.status(500).json({ message: "Failed to load classes", error: err });
@@ -16,7 +17,9 @@ export const getAllClasses = async (req, res) => {
 export const approveClass = async (req, res) => {
   const { id } = req.params;
   try {
-    const result = await db.collection("classes").updateOne(
+        const dataBase = db.getDB()
+
+    const result = await dataBase.collection("classes").updateOne(
       { _id: new ObjectId(id) },
       { $set: { status: "accepted" } }
     );
@@ -35,6 +38,8 @@ export const approveClass = async (req, res) => {
 export const rejectClass = async (req, res) => {
   const { id } = req.params;
   try {
+        const dataBase = db.getDB()
+
     const result = await db.collection("classes").updateOne(
       { _id: new ObjectId(id) },
       { $set: { status: "rejected" } }

@@ -58,3 +58,16 @@ export const submitTeacherRequest = async (req, res) => {
         res.status(500).json({ message: "Internal Server Error" });
     }
 };
+
+
+export const existingTeacherRequest = async (req, res) => {
+    try {
+        const dataBase = db.getDB()
+        const { email } = req.query;
+        const result = await dataBase.collection("teacherRequests").find({email}).toArray();
+        res.send(result)
+    } catch (error) {
+        console.error("Existing Teacher Request Failed:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+} 

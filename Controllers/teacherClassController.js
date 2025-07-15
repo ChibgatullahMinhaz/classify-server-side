@@ -5,7 +5,9 @@ import db from "../config/db.js";
 export const getMyClasses = async (req, res) => {
   const { email } = req.query;
   try {
-    const classes = await db.collection("classes").find({ email }).toArray();
+    const dataBase = db.getDB()
+
+    const classes = await dataBase.collection("classes").find({ email }).toArray();
     res.status(200).json(classes);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch classes", error });
@@ -17,7 +19,9 @@ export const updateClass = async (req, res) => {
   const { id } = req.params;
   const updates = req.body;
   try {
-    const result = await db.collection("classes").updateOne(
+    const dataBase = db.getDB()
+
+    const result = await dataBase.collection("classes").updateOne(
       { _id: new ObjectId(id) },
       { $set: updates }
     );
@@ -31,7 +35,9 @@ export const updateClass = async (req, res) => {
 export const deleteClass = async (req, res) => {
   const { id } = req.params;
   try {
-    const result = await db.collection("classes").deleteOne({ _id: new ObjectId(id) });
+    const dataBase = db.getDB()
+
+    const result = await dataBase.collection("classes").deleteOne({ _id: new ObjectId(id) });
     res.status(200).json({ message: "Class deleted", result });
   } catch (error) {
     res.status(500).json({ message: "Failed to delete", error });
@@ -42,7 +48,9 @@ export const deleteClass = async (req, res) => {
 export const getClassDetails = async (req, res) => {
   const { id } = req.params;
   try {
-    const classData = await db.collection("classes").findOne({ _id: new ObjectId(id) });
+    const dataBase = db.getDB()
+
+    const classData = await dataBase.collection("classes").findOne({ _id: new ObjectId(id) });
     res.status(200).json(classData);
   } catch (error) {
     res.status(500).json({ message: "Error fetching class", error });
@@ -52,12 +60,14 @@ export const getClassDetails = async (req, res) => {
 // 5️⃣ Create Assignment for Class
 export const createAssignment = async (req, res) => {
   try {
+    const dataBase = db.getDB()
+
     const assignment = {
       ...req.body,
       classId: new ObjectId(req.body.classId),
       createdAt: new Date()
     };
-    const result = await db.collection("assignments").insertOne(assignment);
+    const result = await dataBase.collection("assignments").insertOne(assignment);
     res.status(201).json({ message: "Assignment created", insertedId: result.insertedId });
   } catch (error) {
     res.status(500).json({ message: "Failed to create assignment", error });
@@ -70,9 +80,10 @@ export const getClassProgress = async (req, res) => {
   const classId = new ObjectId(id);
 
   try {
-    const classData = await db.collection("classes").findOne({ _id: classId });
-    const totalAssignments = await db.collection("assignments").countDocuments({ classId });
-    const totalSubmissions = await db.collection("submissions").countDocuments({ classId });
+    const dataBase = db.getDB()
+    const classData = await dataBase.collection("classes").findOne({ _id: classId });
+    const totalAssignments = await dataBase.collection("assignments").countDocuments({ classId });
+    const totalSubmissions = await dataBase.collection("submissions").countDocuments({ classId });
 
     res.status(200).json({
       totalEnrollment: classData?.totalEnrollment || 0,
