@@ -17,7 +17,7 @@ export const getAllClasses = async (req, res) => {
 export const approveClass = async (req, res) => {
   const { id } = req.params;
   try {
-        const dataBase = db.getDB()
+    const dataBase = db.getDB()
 
     const result = await dataBase.collection("classes").updateOne(
       { _id: new ObjectId(id) },
@@ -38,9 +38,9 @@ export const approveClass = async (req, res) => {
 export const rejectClass = async (req, res) => {
   const { id } = req.params;
   try {
-        const dataBase = db.getDB()
+    const dataBase = db.getDB()
 
-    const result = await db.collection("classes").updateOne(
+    const result = await dataBase.collection("classes").updateOne(
       { _id: new ObjectId(id) },
       { $set: { status: "rejected" } }
     );

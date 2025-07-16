@@ -14,25 +14,20 @@ export const addNewClass = async (req, res) => {
       description,
       image
     } = req.body;
-
+    const newCourse = req.body;
     if (!title || !name || !email || !price || !description || !image) {
       return res.status(400).json({ message: "All fields are required." });
     }
 
     const newClass = {
-      title,
-      name,
-      email,
+      ...newCourse,
       price: parseFloat(price),
-      description,
-      image,
       totalEnrollment: 0,
       status: "pending",
       createdAt: new Date()
     };
 
     const result = await dataBase.collection("classes").insertOne(newClass);
-
     if (result.insertedId) {
       res.status(201).json({
         message: "Class added successfully and pending approval",

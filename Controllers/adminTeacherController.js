@@ -3,8 +3,9 @@ import dataBase from '../config/db.js'
 // GET all teacher requests
 export const getAllTeacherRequests = async (req, res) => {
     try {
-        const db = dataBase.getDB("db");
-        const requests = await db.collection("teacherRequests").find().toArray();
+        const db = dataBase.getDB();
+        const query = { status: 'pending' }
+        const requests = await db.collection("teacherRequests").find(query).toArray();
         res.json(requests);
     } catch (error) {
         console.error("Error fetching teacher requests:", error);
@@ -16,7 +17,7 @@ export const getAllTeacherRequests = async (req, res) => {
 export const approveTeacherRequest = async (req, res) => {
     const { id } = req.params;
     try {
-        const db = dataBase.getDB("db");
+        const db = dataBase.getDB();
 
         // Update teacherRequests status
         await db.collection("teacherRequests").updateOne(

@@ -18,6 +18,7 @@ export const getMyClasses = async (req, res) => {
 export const updateClass = async (req, res) => {
   const { id } = req.params;
   const updates = req.body;
+  console.log(updates)
   try {
     const dataBase = db.getDB()
 

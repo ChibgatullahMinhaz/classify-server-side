@@ -46,12 +46,13 @@ export const submitTeacherRequest = async (req, res) => {
                 { _id: existing._id },
                 { $set: { ...request } }
             );
+
             return res.status(200).json({ message: "Request resubmitted for review" });
         }
 
         // First-time submission
         const result = await dataBase.collection("teacherRequests").insertOne(request);
-
+      
         res.status(201).json({ insertedId: result.insertedId });
     } catch (error) {
         console.error("Teacher Request Submission Failed:", error);
@@ -59,15 +60,56 @@ export const submitTeacherRequest = async (req, res) => {
     }
 };
 
-
 export const existingTeacherRequest = async (req, res) => {
     try {
-        const dataBase = db.getDB()
+        const dataBase = db.getDB();
         const { email } = req.query;
-        const result = await dataBase.collection("teacherRequests").find({email}).toArray();
-        res.send(result)
+
+        if (!email) {
+            return res.status(400).json({ error: "Email query parameter is required" });
+        }
+
+        const result = await dataBase
+            .collection("teacherRequests")
+            .findOne({ email }); // ✅ Use `findOne` instead of `find().toArray()`
+
+        if (!result) {
+            return res.status(404).json({ message: "No teacher request found for this email" });
+        }
+
+        res.send(result);
     } catch (error) {
         console.error("Existing Teacher Request Failed:", error);
         res.status(500).json({ message: "Internal Server Error" });
     }
-} 
+};
+
+
+
+export const retryTeacherRequest = async (req, res) => {
+    const email = req.params.email;
+
+    if (!email) {
+        return res.status(400).json({ error: "Email is required" });
+    }
+
+    try {
+        const dataBase = db.getDB();
+
+        const result = await dataBase
+            .collection("teacherRequests")
+            .updateOne(
+                { email },
+                { $set: { status: "pending" } }
+            );
+
+        if (result.matchedCount === 0) {
+            return res.status(404).json({ error: "Request not found" });
+        }
+
+        res.status(200).json({ message: "Request status reset to pending" });
+    } catch (error) {
+        console.error("Retry request failed:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
