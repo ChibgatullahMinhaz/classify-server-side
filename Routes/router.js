@@ -13,6 +13,7 @@ import { enrollment, processPayment } from "../Controllers/payment/Paymet.js";
 import { getMyEnrollments, getUserEnrollments } from "../Controllers/Enrollments.js";
 import { assignmentSubmission, reviewSubmission } from "../Controllers/assignments.js";
 import { requireAdmin, requireOwnAccess, requireTeacher, verifyFirebaseJWT } from "../middleware/verifyFirebaseJWT.js";
+import { getCountOfData } from "../Controllers/getTotalCount.js";
 const router = Router();
 
 // running the server
@@ -27,7 +28,7 @@ router.get("/api/ApprovedClasses", getApprovedClasses); //✅
 // get one class for show details 
 router.get("/api/classDetails/:id", getClassById); //✅
 // request as a teacher 
-router.post("/api/teacher-request", submitTeacherRequest);//✅
+router.post("/api/teacher-request", verifyFirebaseJWT, requireOwnAccess, submitTeacherRequest);//✅
 router.get("/api/teacher-request", existingTeacherRequest); //✅
 router.patch("/api/teacher-request/retry/:email", retryTeacherRequest);//✅
 
@@ -94,5 +95,7 @@ router.get("/getAll/assignments/:id", verifyFirebaseJWT, getAllAssignment);
 router.post("/api/assignments/submit", verifyFirebaseJWT, assignmentSubmission);
 router.post("/api/evaluation", verifyFirebaseJWT, reviewSubmission);
 
-
+// total count for pagination
+router.get("/get/total/count/data",  getCountOfData);
+// verifyFirebaseJWT,
 export default router;
