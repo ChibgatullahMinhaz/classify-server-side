@@ -1,6 +1,5 @@
-// middlewares/verifyFirebaseJWT.js
-import admin from '../firebaseAdmin.js';
-import { usersCollection } from '../config/db.js';
+import database from '../config/db.js';
+import admin from "../config/firebaseAdmin.js";
 
 export const verifyFirebaseJWT = async (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -12,13 +11,16 @@ export const verifyFirebaseJWT = async (req, res, next) => {
 
   try {
     const decodedToken = await admin.auth().verifyIdToken(token);
-    req.user = decodedToken; // contains email, uid, etc.
+    req.user = decodedToken;  
 
-    // OPTIONAL: fetch user role from DB
+    const db = database.getDB();
+    const usersCollection = db.collection('users');
+
     const user = await usersCollection.findOne({ email: decodedToken.email });
     if (!user) return res.status(403).send({ error: 'User not found in database' });
 
-    req.user.role = user.role; // attach role to req.user
+    req.user.role = user.role;  
+
     next();
   } catch (error) {
     return res.status(403).send({ error: 'Forbidden - Invalid token', details: error.message });

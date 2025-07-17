@@ -71,7 +71,7 @@ export const existingTeacherRequest = async (req, res) => {
 
         const result = await dataBase
             .collection("teacherRequests")
-            .findOne({ email }); // ✅ Use `findOne` instead of `find().toArray()`
+            .findOne({ email });
 
         if (!result) {
             return res.status(404).json({ message: "No teacher request found for this email" });

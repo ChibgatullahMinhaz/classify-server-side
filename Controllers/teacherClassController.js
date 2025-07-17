@@ -18,7 +18,6 @@ export const getMyClasses = async (req, res) => {
 export const updateClass = async (req, res) => {
   const { id } = req.params;
   const updates = req.body;
-  console.log(updates)
   try {
     const dataBase = db.getDB()
 
@@ -65,7 +64,7 @@ export const createAssignment = async (req, res) => {
 
     const assignment = {
       ...req.body,
-      classId: new ObjectId(req.body.classId),
+      classId: req.body.classId,
       createdAt: new Date()
     };
     const result = await dataBase.collection("assignments").insertOne(assignment);
@@ -78,19 +77,29 @@ export const createAssignment = async (req, res) => {
 // 6️⃣ Class Progress (Assignment count, submission count, enrollment)
 export const getClassProgress = async (req, res) => {
   const { id } = req.params;
-  const classId = new ObjectId(id);
+
 
   try {
     const dataBase = db.getDB()
-    const classData = await dataBase.collection("classes").findOne({ _id: classId });
-    const totalAssignments = await dataBase.collection("assignments").countDocuments({ classId });
-    const totalSubmissions = await dataBase.collection("submissions").countDocuments({ classId });
+    //assignment count
+    const assignmentCount = await dataBase
+      .collection("assignments")
+      .countDocuments({ classId: id });
+    //submission count
+    const submissionCount = await dataBase
+      .collection("submissions")
+      .countDocuments({ classId: id });
 
-    res.status(200).json({
-      totalEnrollment: classData?.totalEnrollment || 0,
-      totalAssignments,
-      totalSubmissions
-    });
+
+    const enrollmentCount = await dataBase
+      .collection("enrollments")
+      .countDocuments({ classId: id });
+
+
+    const progress = {
+      assignmentCount, submissionCount, enrollmentCount
+    }
+    res.status(200).json(progress);
   } catch (error) {
     res.status(500).json({ message: "Error getting progress", error });
   }

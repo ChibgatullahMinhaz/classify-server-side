@@ -4,7 +4,6 @@ export const saveUser = async (req, res) => {
   const { name, email, image, role = "student" } = req.body;
 
   try {
-    console.log(req.body)
     const db = dataBase.getDB()
     // Check for existing user
     const existingUser = await db.collection('users').findOne({ email });
