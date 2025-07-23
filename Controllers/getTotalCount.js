@@ -1,17 +1,22 @@
 import dataBase from '../config/db.js';
 
 export const getCountOfData = async (req, res) => {
-    const { email } = req.query;
-
     try {
         const db = dataBase.getDB();
-        //collections
-        const usersCollection = db.collection("users")
-        const totalUser = await usersCollection.countDocuments();
 
-        const counts = { totalUser }
+        const usersCollection = db.collection("users");
+        const classCollection = db.collection("classes");
+        const teacherRequestCollection = db.collection("teacherRequests");
+
+        
+        const totalUser = await usersCollection.countDocuments();
+        const totalClass = await classCollection.countDocuments();
+        const totalTeacherRequest = await teacherRequestCollection.countDocuments();
+        const totalApprovedClasses = await classCollection.countDocuments({ status: "accepted" });
+
+        const counts = { totalUser, totalClass, totalApprovedClasses, totalTeacherRequest };
         res.json(counts);
     } catch (error) {
-        res.status(500).json({ message: "Failed to fetch user role", error });
+        res.status(500).json({ message: "Failed to fetch counts", error });
     }
 };

@@ -1,12 +1,13 @@
 import { ObjectId } from "mongodb";
-import dataBage  from '../config/db.js'
+import dataBage from '../config/db.js'
 
 // GET all users with optional search
 export const getAllUsers = async (req, res) => {
   try {
     const db = dataBage.getDB();
     const { search } = req.query;
-
+    const currentPage = parseInt(req.query.page)
+    const limit = parseInt(req.query.limit)
     let query = {};
     if (search) {
       const regex = new RegExp(search, "i");
@@ -15,7 +16,7 @@ export const getAllUsers = async (req, res) => {
       };
     }
 
-    const users = await db.collection("users").find(query).toArray();
+    const users = await db.collection("users").find(query).skip(currentPage * limit).limit(limit).toArray();
     res.json(users);
   } catch (error) {
     console.error("Error fetching users:", error);

@@ -5,7 +5,10 @@ import { ObjectId } from "mongodb";
 export const getApprovedClasses = async (req, res) => {
     try {
         const dataBase = db.getDB()
-        const classes = await dataBase.collection("classes").find({ status: "accepted" }).toArray();
+        const currentPage = parseInt(req.query.page)
+        const limit = parseInt(req.query.limit)
+
+        const classes = await dataBase.collection("classes").find({ status: "accepted" }).skip(currentPage * limit).limit(limit).toArray();
         res.json(classes);
     } catch (error) {
         res.status(500).json({ message: "Failed to fetch approved classes" });

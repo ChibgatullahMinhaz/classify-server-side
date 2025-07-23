@@ -6,7 +6,10 @@ import { ObjectId } from "mongodb";
 export const getAllClasses = async (req, res) => {
   try {
     const dataBase = db.getDB()
-    const classes = await dataBase.collection("classes").find({}).toArray();
+       const currentPage = parseInt(req.query.page)
+        const limit = parseInt(req.query.limit)
+
+    const classes = await dataBase.collection("classes").find({}).skip(currentPage * limit).limit(limit).toArray();
     res.status(200).json(classes);
   } catch (err) {
     res.status(500).json({ message: "Failed to load classes", error: err });

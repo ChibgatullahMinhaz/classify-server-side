@@ -3,10 +3,10 @@ import dataBase from '../config/db.js'
 // GET all teacher requests
 export const getAllTeacherRequests = async (req, res) => {
     try {
-
         const db = dataBase.getDB();
-        const { email } = req.query;
-        const requests = await db.collection("teacherRequests").find().toArray();
+         const currentPage = parseInt(req.query.page)
+        const limit = parseInt(req.query.limit)
+        const requests = await db.collection("teacherRequests").find().skip(currentPage * limit).limit(limit).toArray();
         res.json(requests);
     } catch (error) {
         console.error("Error fetching teacher requests:", error);
